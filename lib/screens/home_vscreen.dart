@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../blocs/home_bloc.dart';
 
 class HomePage extends StatefulWidget {
   final String title;
@@ -9,35 +11,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String _inputText;
-
-  void _incrementCounter(String val) {
-    setState(() {
-      _inputText = _inputText + val;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    var text = '|';
-    var model = [
-      '1',
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      '8',
-      '9',
-      '0',
-      '-',
-      '+',
-      '*',
-      '/',
-      '='
-    ];
-
+    var bloc = context.read<HomeBloc>();
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
@@ -56,7 +32,7 @@ class _HomePageState extends State<HomePage> {
                       child: Align(
                           alignment: Alignment.centerRight,
                           child: Text(
-                            text,
+                            context.watch<HomeBloc>().outputText,
                             style: TextStyle(fontSize: 22),
                           )),
                       color: Colors.teal[100])),
@@ -68,14 +44,14 @@ class _HomePageState extends State<HomePage> {
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10,
                       children: [
-                    ...model.map((e) => Container(
+                    ...bloc.models.map((m) => Container(
                         padding: const EdgeInsets.all(8),
                         child: TextButton(
                           child: Text(
-                            e,
+                            m.val,
                             style: TextStyle(fontSize: 16),
                           ),
-                          onPressed: () {},
+                          onPressed: () => bloc.onAddValue(m),
                         ),
                         color: Colors.teal[100]))
                   ]))
