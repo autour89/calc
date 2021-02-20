@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.all(8),
                         child: TextButton(
                           child: Text(
-                            m.val,
+                            m.value,
                             style: TextStyle(fontSize: 16),
                           ),
                           onPressed: () => bloc.onAddValue(m),
