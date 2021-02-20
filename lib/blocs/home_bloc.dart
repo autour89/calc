@@ -1,50 +1,80 @@
 import 'package:calc/models/CalcModel.dart';
-import 'package:calc/models/ValueModel.dart';
 import 'package:flutter/cupertino.dart';
 
 class HomeBloc with ChangeNotifier {
-  CalcModel _calcModel;
+  String _operandOne = '', _operandTwo = '', _operaotor = '';
   String _outputText = '|';
-  List<ValueModel> _models;
+  List<CalcModel> _models = [];
 
   String get outputText => _outputText;
 
-  HomeBloc() {
-    _calcModel = CalcModel();
-    _models = [];
+  bool get _canCalc =>
+      _operandOne.isNotEmpty && _operaotor.isNotEmpty && _operandTwo.isNotEmpty;
 
-    var valueModels = [
-      ValueModel(val: 1, calculationFunc: () => _calcModel.equals(val: '1')),
-      ValueModel(val: 2, calculationFunc: () => _calcModel.equals(val: '2')),
-      ValueModel(val: 3, calculationFunc: () => _calcModel.equals(val: '3')),
-      ValueModel(val: 4, calculationFunc: () => _calcModel.equals(val: '4')),
-      ValueModel(val: 5, calculationFunc: () => _calcModel.equals(val: '5')),
-      ValueModel(val: 6, calculationFunc: () => _calcModel.equals(val: '6')),
-      ValueModel(val: 7, calculationFunc: () => _calcModel.equals(val: '7')),
-      ValueModel(val: 8, calculationFunc: () => _calcModel.equals(val: '8')),
-      ValueModel(val: 9, calculationFunc: () => _calcModel.equals(val: '9')),
-      ValueModel(val: 0, calculationFunc: () => _calcModel.equals(val: '0')),
+  List<CalcModel> get models => _models;
+
+  HomeBloc() {
+    var numModels = [
+      CalcModel(key: 1),
+      CalcModel(key: 2),
+      CalcModel(key: 3),
+      CalcModel(key: 4),
+      CalcModel(key: 5),
+      CalcModel(key: 6),
+      CalcModel(key: 7),
+      CalcModel(key: 8),
+      CalcModel(key: 9),
+      CalcModel(key: 0),
     ];
     var operandModels = [
-      ValueModel(val: '-', calculationFunc: () => _calcModel.equals(val: '-')),
-      ValueModel(val: '+', calculationFunc: () => _calcModel.equals(val: '+')),
-      ValueModel(val: '*', calculationFunc: () => _calcModel.equals(val: '*')),
-      ValueModel(val: '/', calculationFunc: () => _calcModel.equals(val: '/')),
-      ValueModel(val: '=', calculationFunc: () => _calcModel.equals()),
+      CalcModel(key: '-'),
+      CalcModel(key: '+'),
+      CalcModel(key: '*'),
+      CalcModel(key: '/'),
+      CalcModel(key: '='),
     ];
 
-    _models..addAll(valueModels)..addAll(operandModels);
+    _models..addAll(numModels)..addAll(operandModels);
   }
 
-  List<ValueModel> get models => _models;
+  void calc({CalcModel model}) {
+    if (!_canCalc && model.value == '=') return;
 
-  void onAddValue(ValueModel model) {
-    if (model.isOperand) {
-      model.calculationFunc();
-      if (_calcModel.canCalc) _outputText = '${_calcModel.calculationResult}|';
-    } else {}
+    if (model.isOperator) {
+      if (_canCalc) {
+        switch (_operaotor) {
+          case '-':
+            _operandOne = _minus();
+            break;
+          case '+':
+            _operandOne = _add();
+            break;
+          case '*':
+            _operandOne = _multiple();
+            break;
+          default:
+            _operandOne = _devide();
+        }
+        _operandTwo = '';
+        _operaotor = '';
+      } else
+        _operaotor = model.value;
+    } else {
+      if (_operaotor.isEmpty) {
+        _operandOne = '$_operandOne${model.value}';
+      } else {
+        _operandTwo = '$_operandTwo${model.value}';
+      }
+    }
+    _outputText = '$_operandOne$_operaotor$_operandTwo|';
     notifyListeners();
   }
 
-  void updateCalc(Function func) {}
+  String _add() => (int.parse(_operandOne) + int.parse(_operandTwo)).toString();
+  String _minus() =>
+      (int.parse(_operandOne) - int.parse(_operandTwo)).toString();
+  String _multiple() =>
+      (int.parse(_operandOne) * int.parse(_operandTwo)).toString();
+  String _devide() =>
+      (int.parse(_operandOne) / int.parse(_operandTwo)).toString();
 }

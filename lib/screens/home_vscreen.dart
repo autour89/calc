@@ -5,7 +5,7 @@ import '../blocs/home_bloc.dart';
 class HomePage extends StatefulWidget {
   final String title;
 
-  HomePage({Key key, this.title}) : super(key: key) {}
+  HomePage({Key key, this.title}) : super(key: key);
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
                             m.value,
                             style: TextStyle(fontSize: 16),
                           ),
-                          onPressed: () => bloc.onAddValue(m),
+                          onPressed: () => bloc.calc(model: m),
                         ),
                         color: Colors.teal[100]))
                   ]))
