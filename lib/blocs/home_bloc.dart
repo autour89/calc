@@ -67,7 +67,10 @@ class HomeBloc with ChangeNotifier {
         _operator = Command.non;
         _operands.add(CalcModel(key: result, leftOperand: true));
       } else {
-        _operator = model.command != Command.equal ? model.command : {};
+        _operator = model.command != Command.equal &&
+                _operands.where((element) => element.leftOperand).isNotEmpty
+            ? model.command
+            : {};
       }
     } else {
       var operandModel = CalcModel(
@@ -100,6 +103,7 @@ class HomeBloc with ChangeNotifier {
   }
 
   void _removeLastInput() {
+    //identify where from to remove last element
     _operands.where((element) => !element.leftOperand).isNotEmpty
         ? _operands
             .remove(_operands.where((element) => !element.leftOperand).last)
@@ -112,6 +116,7 @@ class HomeBloc with ChangeNotifier {
   }
 
   String _operatorToString() {
+    //map operator to string
     switch (_operator) {
       case Command.minus:
         return '-';
