@@ -4,16 +4,14 @@ enum Command { non, add, minus, multiple, divide, equal, edit, reset }
 
 class CalcModel {
   dynamic key;
-  Command _command = Command.non;
-  bool leftOperand = false;
+  Command command = Command.non;
+  bool leftOperand;
 
-  CalcModel({@required this.key, this.leftOperand}) {
+  CalcModel({@required this.key, this.leftOperand, this.command}) {
     _mapToCommand();
   }
 
   String get value => key.toString();
-
-  Command get command => _command;
 
   bool get isOperator => num.tryParse(value) == null;
 
@@ -21,25 +19,25 @@ class CalcModel {
     if (isOperator) {
       switch (value) {
         case '-':
-          _command = Command.minus;
+          command = Command.minus;
           break;
         case '+':
-          _command = Command.add;
+          command = Command.add;
           break;
         case '*':
-          _command = Command.multiple;
+          command = Command.multiple;
           break;
         case '/':
-          _command = Command.divide;
+          command = Command.divide;
           break;
         case '=':
-          _command = Command.equal;
+          command = Command.equal;
           break;
         case 'X':
-          _command = Command.edit;
+          command = Command.edit;
           break;
         default:
-          _command = Command.reset;
+          command = Command.reset;
           break;
       }
     }

@@ -3,16 +3,27 @@ import 'package:flutter/foundation.dart';
 
 class HomeBloc with ChangeNotifier {
   String _outputText = '|';
-  Command _operator = Command.non;
-  List<CalcModel> _operands = [];
+  List<CalcModel> _calculations = [];
   List<CalcModel> _models = [];
 
   String get outputText => _outputText;
 
   bool get _canCalc =>
-      _operands.where((element) => element.leftOperand).isNotEmpty &&
-      _operator != Command.non &&
-      _operands.where((element) => !element.leftOperand).isNotEmpty;
+      _calculations
+          .where((element) => element.leftOperand)
+          .isNotEmpty &&
+          _calculations
+              .where((element) => element.command != null)
+              .isNotEmpty &&
+          _calculations
+              .where((element) =>
+          element.leftOperand == false && element.command == null)
+              .isNotEmpty;
+
+  bool get _isOperatorSet =>
+      _calculations
+          .where((element) => element.command != null)
+          .isNotEmpty;
 
   List<CalcModel> get models => _models;
 
@@ -43,46 +54,53 @@ class HomeBloc with ChangeNotifier {
 
   void calc({CalcModel model}) {
     if (model.command == Command.reset) {
-      _operator = Command.non;
-      _operands.clear();
+      _calculations.clear();
     } else if (model.command == Command.edit)
       _removeLastInput();
     else if (model.isOperator) {
       _processOperator(model);
     } else {
-      _operands.add(CalcModel(
-          key: model.key,
-          leftOperand: _operator == Command.non ? true : false));
+      _calculations.add(
+          CalcModel(key: model.key, leftOperand: _isOperatorSet ? false : true));
     }
     _updateOutput();
   }
 
-  String _add() => (int.parse(_operandsToValue(leftOperand: true)) +
+  String _add() =>
+      (int.parse(_operandsToValue(leftOperand: true)) +
           int.parse(_operandsToValue()))
-      .toString();
+          .toString();
 
-  String _minus() => (int.parse(_operandsToValue(leftOperand: true)) -
+  String _minus() =>
+      (int.parse(_operandsToValue(leftOperand: true)) -
           int.parse(_operandsToValue()))
-      .toString();
+          .toString();
 
-  String _multiple() => (int.parse(_operandsToValue(leftOperand: true)) *
+  String _multiple() =>
+      (int.parse(_operandsToValue(leftOperand: true)) *
           int.parse(_operandsToValue()))
-      .toString();
+          .toString();
 
-  String _divide() => (int.parse(_operandsToValue(leftOperand: true)) /
+  String _divide() =>
+      (int.parse(_operandsToValue(leftOperand: true)) /
           int.parse(_operandsToValue()))
-      .toString();
+          .toString();
 
   void _updateOutput() {
+    //concatenate data into string
     _outputText =
-        '${_operandsToValue(leftOperand: true)}${_operatorToString()}${_operandsToValue()}|';
+    '${_operandsToValue(
+        leftOperand: true)}${_operatorToString()}${_operandsToValue()}|';
     notifyListeners();
   }
 
   void _processOperator(CalcModel model) {
+    //calculate data or set operator
     if (_canCalc) {
       String result;
-      switch (_operator) {
+      switch (_calculations
+          .firstWhere((element) => element.command != null)
+          .command) {
         case Command.minus:
           result = _minus();
           break;
@@ -95,48 +113,49 @@ class HomeBloc with ChangeNotifier {
         default:
           result = _divide();
       }
-      _operands.clear();
-      _operator = Command.non;
-      _operands.add(CalcModel(key: result, leftOperand: true));
+      _calculations.clear();
+      _calculations.add(CalcModel(key: result, leftOperand: true));
     } else {
-      _operator = model.command != Command.equal &&
-              _operands.where((element) => element.leftOperand).isNotEmpty
-          ? model.command
-          : {};
+      if (model.command != Command.equal &&
+          _calculations
+              .where((element) => element.leftOperand)
+              .isNotEmpty) {
+        _calculations.removeWhere((element) => element.command != null);
+        _calculations.add(CalcModel(key: model.value, command: model.command));
+      }
     }
   }
 
   void _removeLastInput() {
     //identify where from to remove last element
-    _operands.where((element) => !element.leftOperand).isNotEmpty
-        ? _operands
-            .remove(_operands.where((element) => !element.leftOperand).last)
-        : _operator != Command.non
-            ? _operator = Command.non
-            : _operands.where((element) => element.leftOperand).isNotEmpty
-                ? _operands.remove(
-                    _operands.where((element) => element.leftOperand).last)
-                : {};
+    _calculations
+        .where((element) => !element.leftOperand)
+        .isNotEmpty
+        ? _calculations
+        .remove(_calculations.lastWhere((element) => !element.leftOperand))
+        : _calculations
+        .where((element) => element.command != null)
+        .isNotEmpty
+        ? _calculations.remove(
+        _calculations.lastWhere((element) => element.command != null))
+        : _calculations
+        .where((element) => element.leftOperand)
+        .isNotEmpty
+        ? _calculations.remove(
+        _calculations.lastWhere((element) => element.leftOperand))
+        : {};
   }
 
   String _operatorToString() {
     //map operator to string
-    switch (_operator) {
-      case Command.minus:
-        return '-';
-      case Command.add:
-        return '+';
-      case Command.multiple:
-        return '*';
-      case Command.divide:
-        return '/';
-      default:
-        return '';
-    }
+    return _isOperatorSet ? _calculations
+        .firstWhere((element) => element.command != null)
+        .value : '';
   }
 
-  String _operandsToValue({bool leftOperand = false}) => _operands
-      .where((element) => element.leftOperand == leftOperand)
-      .map((e) => e.value)
-      .join();
+  String _operandsToValue({bool leftOperand = false}) =>
+      _calculations
+          .where((element) => element.leftOperand == leftOperand)
+          .map((e) => e.value)
+          .join();
 }
