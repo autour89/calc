@@ -1,15 +1,18 @@
 import 'package:calc/models/CalcModel.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
 class HomeBloc with ChangeNotifier {
-  String _operandOne = '', _operandTwo = '', _operaotor = '';
   String _outputText = '|';
+  Command _operator = Command.non;
+  List<CalcModel> _operands = [];
   List<CalcModel> _models = [];
 
   String get outputText => _outputText;
 
   bool get _canCalc =>
-      _operandOne.isNotEmpty && _operaotor.isNotEmpty && _operandTwo.isNotEmpty;
+      _operands.where((element) => element.leftOperand).isNotEmpty &&
+      _operator != Command.non &&
+      _operands.where((element) => !element.leftOperand).isNotEmpty;
 
   List<CalcModel> get models => _models;
 
@@ -26,55 +29,105 @@ class HomeBloc with ChangeNotifier {
       CalcModel(key: 9),
       CalcModel(key: 0),
     ];
-    var operandModels = [
+    var operatorModels = [
       CalcModel(key: '-'),
       CalcModel(key: '+'),
       CalcModel(key: '*'),
       CalcModel(key: '/'),
       CalcModel(key: '='),
+      CalcModel(key: 'CE'),
+      CalcModel(key: 'X'),
     ];
-
-    _models..addAll(numModels)..addAll(operandModels);
+    _models..addAll(numModels)..addAll(operatorModels);
   }
 
   void calc({CalcModel model}) {
-    if (!_canCalc && model.value == '=') return;
-
-    if (model.isOperator) {
+    if (model.command == Command.reset) {
+      _operator = Command.non;
+      _operands.clear();
+    } else if (model.command == Command.edit)
+      _removeLastInput();
+    else if (model.isOperator) {
       if (_canCalc) {
-        switch (_operaotor) {
-          case '-':
-            _operandOne = _minus();
+        String result;
+        switch (_operator) {
+          case Command.minus:
+            result = _minus();
             break;
-          case '+':
-            _operandOne = _add();
+          case Command.add:
+            result = _add();
             break;
-          case '*':
-            _operandOne = _multiple();
+          case Command.multiple:
+            result = _multiple();
             break;
           default:
-            _operandOne = _devide();
+            result = _divide();
         }
-        _operandTwo = '';
-        _operaotor = '';
-      } else
-        _operaotor = model.value;
-    } else {
-      if (_operaotor.isEmpty) {
-        _operandOne = '$_operandOne${model.value}';
+        _operands.clear();
+        _operator = Command.non;
+        _operands.add(CalcModel(key: result, leftOperand: true));
       } else {
-        _operandTwo = '$_operandTwo${model.value}';
+        _operator = model.command != Command.equal ? model.command : {};
       }
+    } else {
+      var operandModel = CalcModel(
+          key: model.key, leftOperand: _operator == Command.non ? true : false);
+      _operands.add(operandModel);
     }
-    _outputText = '$_operandOne$_operaotor$_operandTwo|';
+    _updateOutput();
+  }
+
+  String _add() => (int.parse(_operandsToValue(leftOperand: true)) +
+          int.parse(_operandsToValue()))
+      .toString();
+
+  String _minus() => (int.parse(_operandsToValue(leftOperand: true)) -
+          int.parse(_operandsToValue()))
+      .toString();
+
+  String _multiple() => (int.parse(_operandsToValue(leftOperand: true)) *
+          int.parse(_operandsToValue()))
+      .toString();
+
+  String _divide() => (int.parse(_operandsToValue(leftOperand: true)) /
+          int.parse(_operandsToValue()))
+      .toString();
+
+  void _updateOutput() {
+    _outputText =
+        '${_operandsToValue(leftOperand: true)}${_operatorToString()}${_operandsToValue()}|';
     notifyListeners();
   }
 
-  String _add() => (int.parse(_operandOne) + int.parse(_operandTwo)).toString();
-  String _minus() =>
-      (int.parse(_operandOne) - int.parse(_operandTwo)).toString();
-  String _multiple() =>
-      (int.parse(_operandOne) * int.parse(_operandTwo)).toString();
-  String _devide() =>
-      (int.parse(_operandOne) / int.parse(_operandTwo)).toString();
+  void _removeLastInput() {
+    _operands.where((element) => !element.leftOperand).isNotEmpty
+        ? _operands
+            .remove(_operands.where((element) => !element.leftOperand).last)
+        : _operator != Command.non
+            ? _operator = Command.non
+            : _operands.where((element) => element.leftOperand).isNotEmpty
+                ? _operands.remove(
+                    _operands.where((element) => element.leftOperand).last)
+                : {};
+  }
+
+  String _operatorToString() {
+    switch (_operator) {
+      case Command.minus:
+        return '-';
+      case Command.add:
+        return '+';
+      case Command.multiple:
+        return '*';
+      case Command.divide:
+        return '/';
+      default:
+        return '';
+    }
+  }
+
+  String _operandsToValue({bool leftOperand = false}) => _operands
+      .where((element) => element.leftOperand == leftOperand)
+      .map((e) => e.value)
+      .join();
 }
