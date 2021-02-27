@@ -48,34 +48,11 @@ class HomeBloc with ChangeNotifier {
     } else if (model.command == Command.edit)
       _removeLastInput();
     else if (model.isOperator) {
-      if (_canCalc) {
-        String result;
-        switch (_operator) {
-          case Command.minus:
-            result = _minus();
-            break;
-          case Command.add:
-            result = _add();
-            break;
-          case Command.multiple:
-            result = _multiple();
-            break;
-          default:
-            result = _divide();
-        }
-        _operands.clear();
-        _operator = Command.non;
-        _operands.add(CalcModel(key: result, leftOperand: true));
-      } else {
-        _operator = model.command != Command.equal &&
-                _operands.where((element) => element.leftOperand).isNotEmpty
-            ? model.command
-            : {};
-      }
+      _processOperator(model);
     } else {
-      var operandModel = CalcModel(
-          key: model.key, leftOperand: _operator == Command.non ? true : false);
-      _operands.add(operandModel);
+      _operands.add(CalcModel(
+          key: model.key,
+          leftOperand: _operator == Command.non ? true : false));
     }
     _updateOutput();
   }
@@ -100,6 +77,33 @@ class HomeBloc with ChangeNotifier {
     _outputText =
         '${_operandsToValue(leftOperand: true)}${_operatorToString()}${_operandsToValue()}|';
     notifyListeners();
+  }
+
+  void _processOperator(CalcModel model) {
+    if (_canCalc) {
+      String result;
+      switch (_operator) {
+        case Command.minus:
+          result = _minus();
+          break;
+        case Command.add:
+          result = _add();
+          break;
+        case Command.multiple:
+          result = _multiple();
+          break;
+        default:
+          result = _divide();
+      }
+      _operands.clear();
+      _operator = Command.non;
+      _operands.add(CalcModel(key: result, leftOperand: true));
+    } else {
+      _operator = model.command != Command.equal &&
+              _operands.where((element) => element.leftOperand).isNotEmpty
+          ? model.command
+          : {};
+    }
   }
 
   void _removeLastInput() {
