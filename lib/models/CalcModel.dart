@@ -1,19 +1,21 @@
 import 'package:flutter/foundation.dart';
 
-enum Command { non, add, minus, multiple, divide, equal, edit, reset }
+enum Command { non, minus, add, multiple, divide, equal, edit, reset }
 
 class CalcModel {
   dynamic key;
-  Command command = Command.non;
+  Command command;
   bool leftOperand;
 
-  CalcModel({@required this.key, this.leftOperand, this.command}) {
+  CalcModel({@required this.key, this.leftOperand}) {
     _mapToCommand();
   }
 
   String get value => key.toString();
 
-  bool get isOperator => num.tryParse(value) == null;
+  bool get isOperator => num.tryParse(value) == null && !isFloat;
+
+  bool get isFloat => value == '.';
 
   void _mapToCommand() {
     if (isOperator) {
@@ -36,8 +38,11 @@ class CalcModel {
         case 'X':
           command = Command.edit;
           break;
-        default:
+        case 'CE':
           command = Command.reset;
+          break;
+        default:
+          command = Command.non;
           break;
       }
     }

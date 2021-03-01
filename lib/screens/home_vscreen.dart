@@ -3,9 +3,8 @@ import 'package:provider/provider.dart';
 import '../blocs/home_bloc.dart';
 
 class HomePage extends StatefulWidget {
-  final String title;
+  HomePage({Key key}) : super(key: key);
 
-  HomePage({Key key, this.title}) : super(key: key);
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -15,9 +14,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     var bloc = context.read<HomeBloc>();
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
+        appBar: AppBar(),
         body: SafeArea(
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,7 +46,7 @@ class _HomePageState extends State<HomePage> {
                         child: TextButton(
                           child: Text(
                             m.value,
-                            style: TextStyle(fontSize: 16),
+                            style: TextStyle(fontSize: 26),
                           ),
                           onPressed: () => bloc.calc(model: m),
                         ),
