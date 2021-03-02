@@ -2,12 +2,11 @@ import 'package:calc/models/CalcModel.dart';
 import 'package:flutter/foundation.dart';
 
 class HomeBloc with ChangeNotifier {
-  String _outputText = '|';
   List<CalcModel> _calculations = [];
   List<CalcModel> _models = [];
   RegExp _expression = RegExp(r'^(\d?|[0][.]\d*|[1-9][0-9]*[.]?\d*)$');
 
-  String get outputText => _outputText;
+  String get outputText => '${_calculations.map((e) => e.value).join()}|';
 
   List<CalcModel> get models => _models;
 
@@ -19,38 +18,8 @@ class HomeBloc with ChangeNotifier {
   bool get _operatorSet =>
       _calculations.where((element) => element.command != null).isNotEmpty;
 
-  bool _isValid(CalcModel model) {
-    var maxLength = 15;
-    var input =
-        _mapToString(leftOperand: _operatorSet ? false : true) + model.value;
-
-    return input.length <= maxLength && _expression.hasMatch(input);
-  }
-
   HomeBloc() {
-    var numbs = [
-      CalcModel(key: 1),
-      CalcModel(key: 2),
-      CalcModel(key: 3),
-      CalcModel(key: 4),
-      CalcModel(key: 5),
-      CalcModel(key: 6),
-      CalcModel(key: 7),
-      CalcModel(key: 8),
-      CalcModel(key: 9),
-      CalcModel(key: 0),
-      CalcModel(key: '.'),
-    ];
-    var operators = [
-      CalcModel(key: '-'),
-      CalcModel(key: '+'),
-      CalcModel(key: '*'),
-      CalcModel(key: '/'),
-      CalcModel(key: 'CE'),
-      CalcModel(key: 'X'),
-      CalcModel(key: '='),
-    ];
-    _models..addAll(numbs)..addAll(operators);
+    _init();
   }
 
   void calc({CalcModel model}) {
@@ -65,25 +34,32 @@ class HomeBloc with ChangeNotifier {
       _calculations.add(
           CalcModel(key: model.key, leftOperand: _operatorSet ? false : true));
     }
-    _outputText =
-        '${_calculations.map((e) => e.value).join()}|'; //map data to string
     notifyListeners();
   }
 
-  String _add() => (double.parse(_mapToString(leftOperand: true)) +
-          double.parse(_mapToString()))
+  bool _isValid(CalcModel model) {
+    //validate input form
+    var maxLength = 15;
+    var input =
+        _mapToValue(leftOperand: _operatorSet ? false : true) + model.value;
+
+    return input.length <= maxLength && _expression.hasMatch(input);
+  }
+
+  String _add() => (double.parse(_mapToValue(leftOperand: true)) +
+          double.parse(_mapToValue()))
       .toString();
 
-  String _minus() => (double.parse(_mapToString(leftOperand: true)) -
-          double.parse(_mapToString()))
+  String _minus() => (double.parse(_mapToValue(leftOperand: true)) -
+          double.parse(_mapToValue()))
       .toString();
 
-  String _multiple() => (double.parse(_mapToString(leftOperand: true)) *
-          double.parse(_mapToString()))
+  String _multiple() => (double.parse(_mapToValue(leftOperand: true)) *
+          double.parse(_mapToValue()))
       .toString();
 
-  String _divide() => (double.parse(_mapToString(leftOperand: true)) /
-          double.parse(_mapToString()))
+  String _divide() => (double.parse(_mapToValue(leftOperand: true)) /
+          double.parse(_mapToValue()))
       .toString();
 
   void _processOperator(CalcModel model) {
@@ -117,11 +93,37 @@ class HomeBloc with ChangeNotifier {
     }
   }
 
-  String _mapToString({bool leftOperand = false}) {
+  String _mapToValue({bool leftOperand = false}) {
     //map operands to string
     return _calculations
         .where((element) => element.leftOperand == leftOperand)
         .map((e) => e.value)
         .join();
+  }
+
+  void _init() {
+    var numbs = [
+      CalcModel(key: 1),
+      CalcModel(key: 2),
+      CalcModel(key: 3),
+      CalcModel(key: 4),
+      CalcModel(key: 5),
+      CalcModel(key: 6),
+      CalcModel(key: 7),
+      CalcModel(key: 8),
+      CalcModel(key: 9),
+      CalcModel(key: 0),
+      CalcModel(key: '.'),
+    ];
+    var operators = [
+      CalcModel(key: '-'),
+      CalcModel(key: '+'),
+      CalcModel(key: '*'),
+      CalcModel(key: '/'),
+      CalcModel(key: 'CE'),
+      CalcModel(key: 'X'),
+      CalcModel(key: '='),
+    ];
+    _models..addAll(numbs)..addAll(operators);
   }
 }
