@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-enum Command { non, minus, add, multiple, divide, equal, edit, reset }
+enum Command { non, equal, edit, reset, minus, add, multiple, divide }
 
 class CalcModel {
   dynamic key;

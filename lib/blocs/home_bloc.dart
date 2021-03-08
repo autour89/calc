@@ -6,7 +6,7 @@ class HomeBloc with ChangeNotifier {
   List<CalcModel> _models = [];
   RegExp _expression = RegExp(r'^(\d?|[0][.]\d*|[1-9][0-9]*[.]?\d*)$');
 
-  String get outputText => '${_calculations.map((e) => e.value).join()}|';
+  String get output => '${_calculations.map((e) => e.value).join()}|';
 
   List<CalcModel> get models => _models;
 
@@ -46,21 +46,21 @@ class HomeBloc with ChangeNotifier {
     return input.length <= maxLength && _expression.hasMatch(input);
   }
 
-  String _add() => (double.parse(_mapToValue(leftOperand: true)) +
-          double.parse(_mapToValue()))
-      .toString();
+  String _add() =>
+      (double.parse(_mapToValue(leftOperand: true)) + double.parse(_mapToValue()))
+          .toString();
 
-  String _minus() => (double.parse(_mapToValue(leftOperand: true)) -
-          double.parse(_mapToValue()))
-      .toString();
+  String _minus() =>
+      (double.parse(_mapToValue(leftOperand: true)) - double.parse(_mapToValue()))
+          .toString();
 
-  String _multiple() => (double.parse(_mapToValue(leftOperand: true)) *
-          double.parse(_mapToValue()))
-      .toString();
+  String _multiple() =>
+      (double.parse(_mapToValue(leftOperand: true)) * double.parse(_mapToValue()))
+          .toString();
 
-  String _divide() => (double.parse(_mapToValue(leftOperand: true)) /
-          double.parse(_mapToValue()))
-      .toString();
+  String _divide() =>
+      (double.parse(_mapToValue(leftOperand: true)) / double.parse(_mapToValue()))
+          .toString();
 
   void _processOperator(CalcModel model) {
     //calculate data or set operator
@@ -90,6 +90,9 @@ class HomeBloc with ChangeNotifier {
       }
       _calculations.clear();
       _calculations.add(CalcModel(key: result, leftOperand: true));
+      if (model.command != Command.equal) {
+        _calculations.add(CalcModel(key: model.value));
+      }
     }
   }
 
