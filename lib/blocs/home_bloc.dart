@@ -1,12 +1,14 @@
-import 'package:calc/models/CalcModel.dart';
-import 'package:flutter/foundation.dart';
+import 'package:calc/models/calc_model.dart';
+import 'package:get/get.dart';
+import 'package:math_expressions/math_expressions.dart';
 
-class HomeBloc with ChangeNotifier {
-  List<CalcModel> _calculations = [];
+class HomeBloc extends GetxController {
+  RxList<CalcModel> _calculations = RxList.empty();
   List<CalcModel> _models = [];
   RegExp _expression = RegExp(r'^(\d?|[0][.]\d*|[1-9][0-9]*[.]?\d*)$');
+  Parser _parser = Parser();
 
-  String get output => '${_calculations.map((e) => e.value).join()}|';
+  String get output => _calculations.map((e) => e.value).join();
 
   List<CalcModel> get models => _models;
 
@@ -34,74 +36,38 @@ class HomeBloc with ChangeNotifier {
       _calculations.add(
           CalcModel(key: model.key, leftOperand: _operatorSet ? false : true));
     }
-    notifyListeners();
   }
 
   bool _isValid(CalcModel model) {
     //validate input form
     var maxLength = 15;
-    var input =
-        _mapToValue(leftOperand: _operatorSet ? false : true) + model.value;
+    var filter = _operatorSet ? false : true;
+    var input = _calculations
+            .where((c) => c.leftOperand == filter)
+            .map((c) => c.value)
+            .join() +
+        model.value;
 
     return input.length <= maxLength && _expression.hasMatch(input);
   }
-
-  String _add() =>
-      (double.parse(_mapToValue(leftOperand: true)) + double.parse(_mapToValue()))
-          .toString();
-
-  String _minus() =>
-      (double.parse(_mapToValue(leftOperand: true)) - double.parse(_mapToValue()))
-          .toString();
-
-  String _multiple() =>
-      (double.parse(_mapToValue(leftOperand: true)) * double.parse(_mapToValue()))
-          .toString();
-
-  String _divide() =>
-      (double.parse(_mapToValue(leftOperand: true)) / double.parse(_mapToValue()))
-          .toString();
 
   void _processOperator(CalcModel model) {
     //calculate data or set operator
     if (_cantCalc) {
       if (model.command != Command.equal &&
-          _calculations.where((element) => element.leftOperand).isNotEmpty) {
-        _calculations.removeWhere((element) => element.command != null);
+          !_operatorSet &&
+          _calculations.length > 0) {
         _calculations.add(CalcModel(key: model.value));
       }
     } else {
-      String result;
-      var command = _calculations
-          .firstWhere((element) => element.command != null)
-          .command;
-      switch (command) {
-        case Command.minus:
-          result = _minus();
-          break;
-        case Command.add:
-          result = _add();
-          break;
-        case Command.multiple:
-          result = _multiple();
-          break;
-        default:
-          result = _divide();
-      }
+      var result =
+          _parser.parse(output).evaluate(EvaluationType.REAL, ContextModel());
       _calculations.clear();
       _calculations.add(CalcModel(key: result, leftOperand: true));
       if (model.command != Command.equal) {
         _calculations.add(CalcModel(key: model.value));
       }
     }
-  }
-
-  String _mapToValue({bool leftOperand = false}) {
-    //map operands to string
-    return _calculations
-        .where((element) => element.leftOperand == leftOperand)
-        .map((e) => e.value)
-        .join();
   }
 
   void _init() {
