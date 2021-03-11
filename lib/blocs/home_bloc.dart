@@ -72,28 +72,28 @@ class HomeBloc extends GetxController {
   }
 
   void _init() {
-    var numbs = [
-      CalcModel(key: 1),
-      CalcModel(key: 2),
-      CalcModel(key: 3),
-      CalcModel(key: 4),
-      CalcModel(key: 5),
-      CalcModel(key: 6),
-      CalcModel(key: 7),
-      CalcModel(key: 8),
-      CalcModel(key: 9),
-      CalcModel(key: 0),
-      CalcModel(key: '.'),
-    ];
-    var operators = [
-      CalcModel(key: '-'),
-      CalcModel(key: '+'),
-      CalcModel(key: '*'),
-      CalcModel(key: '/'),
-      CalcModel(key: 'CE'),
-      CalcModel(key: 'X'),
-      CalcModel(key: '='),
-    ];
-    _models..addAll(numbs)..addAll(operators);
+    _models
+      ..addAll([
+        CalcModel(key: 1),
+        CalcModel(key: 2),
+        CalcModel(key: 3),
+        CalcModel(key: 4),
+        CalcModel(key: 5),
+        CalcModel(key: 6),
+        CalcModel(key: 7),
+        CalcModel(key: 8),
+        CalcModel(key: 9),
+        CalcModel(key: 0),
+        CalcModel(key: '.'),
+      ])
+      ..addAll([
+        CalcModel(key: '-'),
+        CalcModel(key: '+'),
+        CalcModel(key: '*'),
+        CalcModel(key: '/'),
+        CalcModel(key: 'CE'),
+        CalcModel(key: 'X'),
+        CalcModel(key: '='),
+      ]);
   }
 }
