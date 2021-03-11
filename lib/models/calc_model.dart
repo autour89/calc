@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-enum Command { non, equal, edit, reset}
+enum Command { non, equal, edit, reset, minus, add, multiple, divide }
 
 class CalcModel {
   dynamic key;
@@ -18,21 +18,31 @@ class CalcModel {
   bool get isFloat => value == '.';
 
   void _mapToCommand() {
-    if (isOperator) {
-      switch (value) {
-        case '=':
-          command = Command.equal;
-          break;
-        case 'X':
-          command = Command.edit;
-          break;
-        case 'CE':
-          command = Command.reset;
-          break;
-        default:
-          command = Command.non;
-          break;
-      }
+    switch (value) {
+      case '-':
+        command = Command.minus;
+        break;
+      case '+':
+        command = Command.add;
+        break;
+      case '*':
+        command = Command.multiple;
+        break;
+      case '/':
+        command = Command.divide;
+        break;
+      case '=':
+        command = Command.equal;
+        break;
+      case 'X':
+        command = Command.edit;
+        break;
+      case 'CE':
+        command = Command.reset;
+        break;
+      default:
+        command = Command.non;
+        break;
     }
   }
 }

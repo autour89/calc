@@ -17,8 +17,9 @@ class HomeBloc extends GetxController {
       _operatorSet == false ||
       _calculations.where((element) => element.leftOperand).isEmpty;
 
-  bool get _operatorSet =>
-      _calculations.where((element) => element.command != null).isNotEmpty;
+  bool get _operatorSet => _calculations
+      .where((element) => element.command != Command.non)
+      .isNotEmpty;
 
   HomeBloc() {
     _init();
