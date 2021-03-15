@@ -1,8 +1,11 @@
+import 'package:calc/blocs/services/I_data_service.dart';
+import 'package:calc/blocs/services/db_context_service.dart';
 import 'package:calc/models/calc_model.dart';
 import 'package:get/get.dart';
 import 'package:math_expressions/math_expressions.dart';
 
 class HomeBloc extends GetxController {
+  IDataService _dataService;
   RxList<CalcModel> _calculations = RxList.empty();
   List<CalcModel> _models = [];
   RegExp _expression = RegExp(r'^(\d?|[0][.]\d*|[1-9][0-9]*[.]?\d*)$');
@@ -71,7 +74,8 @@ class HomeBloc extends GetxController {
     }
   }
 
-  void _init() {
+  void _init() async {
+    _dataService = Get.find<DbContextService>();
     _models
       ..addAll([
         CalcModel(key: 1),
@@ -95,5 +99,10 @@ class HomeBloc extends GetxController {
         CalcModel(key: 'X'),
         CalcModel(key: '='),
       ]);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

@@ -1,10 +1,12 @@
 import 'package:calc/blocs/bindings/home_binding.dart';
 import 'package:calc/blocs/bindings/service_binding.dart';
+import 'blocs/services/db_context_service.dart';
 import 'package:calc/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-void main() {
+void main() async {
+  await DbContextService.initContext;
   runApp(MyApp());
 }
 
@@ -12,7 +14,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      enableLog: true,
       getPages: [
         GetPage(
           name: '/',
