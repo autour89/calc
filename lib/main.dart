@@ -5,35 +5,47 @@ import 'package:calc/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-void main() async {
-  await DbContextService.initContext;
-  runApp(MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      getPages: [
-        GetPage(
-          name: '/',
-          page: () => HomePage(),
-          binding: HomeBinding(),
-        )
-      ],
-      initialBinding: ServiceBinding(),
-      theme: ThemeData(
-          brightness: Brightness.light,
-          primaryColor: Colors.grey[300],
-          accentColor: Colors.grey[700],
-          primaryTextTheme: TextTheme(
-              headline5: TextStyle(fontSize: 24, color: Colors.grey[300]))),
-      darkTheme: ThemeData(
-          brightness: Brightness.dark,
-          primaryColor: Colors.grey[800],
-          accentColor: Colors.grey[400],
-          primaryTextTheme: TextTheme(
-              headline5: TextStyle(fontSize: 24, color: Colors.black))),
-    );
+    return FutureBuilder(
+        future: appStart(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return GetMaterialApp(
+              getPages: [
+                GetPage(
+                  name: '/',
+                  page: () => HomePage(),
+                  binding: HomeBinding(),
+                )
+              ],
+              initialBinding: ServiceBinding(),
+              theme: ThemeData(
+                  brightness: Brightness.light,
+                  primaryColor: Colors.grey[300],
+                  accentColor: Colors.grey[700],
+                  primaryTextTheme: TextTheme(
+                      headline5:
+                          TextStyle(fontSize: 24, color: Colors.grey[300]))),
+              darkTheme: ThemeData(
+                  brightness: Brightness.dark,
+                  primaryColor: Colors.grey[800],
+                  accentColor: Colors.grey[400],
+                  primaryTextTheme: TextTheme(
+                      headline5: TextStyle(fontSize: 24, color: Colors.black))),
+            );
+          } else {
+            return Container();
+          }
+        });
+  }
+
+  Future<bool> appStart() async {
+    await DbContextService.initContext;
+
+    return true;
   }
 }
