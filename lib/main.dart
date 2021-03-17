@@ -38,7 +38,9 @@ class MyApp extends StatelessWidget {
                       headline5: TextStyle(fontSize: 24, color: Colors.black))),
             );
           } else {
-            return Container();
+            return Container(
+              color: Colors.blueGrey,
+            );
           }
         });
   }
