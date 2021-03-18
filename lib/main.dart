@@ -1,5 +1,6 @@
 import 'package:calc/blocs/bindings/home_binding.dart';
 import 'package:calc/blocs/bindings/service_binding.dart';
+import 'package:flutter/cupertino.dart';
 import 'blocs/services/db_context_service.dart';
 import 'package:calc/screens/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,13 @@ class MyApp extends StatelessWidget {
             );
           } else {
             return Container(
-              color: Colors.blueGrey,
+              color: Colors.white,
+              child: Center(
+                child: CupertinoActivityIndicator(
+                  animating: true,
+                  radius: 10,
+                ),
+              ),
             );
           }
         });
