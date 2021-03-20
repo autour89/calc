@@ -69,9 +69,7 @@ class HomePage extends GetView<HomeBloc> {
         children: [
           Theme.of(context).platform == TargetPlatform.android
               ? CircularProgressIndicator()
-              : CupertinoActivityIndicator(
-                  animating: true,
-                ),
+              : CupertinoActivityIndicator(),
           Text('Loading...'),
         ],
       ),
