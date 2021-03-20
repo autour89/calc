@@ -1,7 +1,6 @@
 import 'package:calc/blocs/bindings/home_binding.dart';
 import 'package:calc/blocs/bindings/service_binding.dart';
 import 'package:flutter/cupertino.dart';
-import 'blocs/services/db_context_service.dart';
 import 'package:calc/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,50 +10,27 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: appStart(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return GetMaterialApp(
-              getPages: [
-                GetPage(
-                  name: '/',
-                  page: () => HomePage(),
-                  binding: HomeBinding(),
-                )
-              ],
-              initialBinding: ServiceBinding(),
-              theme: ThemeData(
-                  brightness: Brightness.light,
-                  primaryColor: Colors.grey[300],
-                  accentColor: Colors.grey[700],
-                  primaryTextTheme: TextTheme(
-                      headline5:
-                          TextStyle(fontSize: 24, color: Colors.grey[300]))),
-              darkTheme: ThemeData(
-                  brightness: Brightness.dark,
-                  primaryColor: Colors.grey[800],
-                  accentColor: Colors.grey[400],
-                  primaryTextTheme: TextTheme(
-                      headline5: TextStyle(fontSize: 24, color: Colors.black))),
-            );
-          } else {
-            return Container(
-              color: Colors.white,
-              child: Center(
-                child: CupertinoActivityIndicator(
-                  animating: true,
-                  radius: 10,
-                ),
-              ),
-            );
-          }
-        });
-  }
-
-  Future<bool> appStart() async {
-    await DbContextService.initContext;
-
-    return true;
+    return GetMaterialApp(
+      getPages: [
+        GetPage(
+          name: '/',
+          page: () => HomePage(),
+          binding: HomeBinding(),
+        )
+      ],
+      initialBinding: ServiceBinding(),
+      theme: ThemeData(
+          brightness: Brightness.light,
+          primaryColor: Colors.grey[300],
+          accentColor: Colors.grey[700],
+          primaryTextTheme: TextTheme(
+              headline5: TextStyle(fontSize: 24, color: Colors.grey[300]))),
+      darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          primaryColor: Colors.grey[800],
+          accentColor: Colors.grey[400],
+          primaryTextTheme: TextTheme(
+              headline5: TextStyle(fontSize: 24, color: Colors.black))),
+    );
   }
 }

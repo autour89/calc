@@ -28,6 +28,14 @@ class HomeBloc extends GetxController {
     _init();
   }
 
+
+  Future<bool> appStart() async {
+    // await Future.delayed(Duration(seconds: 2));
+    await DbContextService.initContext;
+
+    return true;
+  }
+
   void calc({CalcModel model}) {
     if (model.command == Command.reset) {
       _calculations.clear();
