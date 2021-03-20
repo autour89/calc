@@ -19,48 +19,45 @@ class HomePage extends GetView<HomeBloc> {
                   ? LoadingView(withTitle: true)
                   : SafeArea(
                       child: Column(children: [
-                      Expanded(
-                          flex: 2,
-                          child: Container(
-                            color: Colors.transparent,
-                            padding: EdgeInsets.all(10),
-                            child: Align(
-                                alignment: Alignment.centerRight,
-                                child: FittedBox(
-                                    child: ConstrainedBox(
-                                  constraints: BoxConstraints(minWidth: 30),
-                                  child: Obx(() => Text(
-                                        controller.output,
-                                        style: Theme.of(context)
-                                            .primaryTextTheme
-                                            .headline1,
-                                      )),
-                                ))),
-                          )),
-                      Expanded(
-                          flex: 4,
-                          child: Center(
-                              child: ConstrainedBox(
-                            constraints:
-                                BoxConstraints(minHeight: 400, maxWidth: 350),
-                            child: Column(
-                              children: [
-                                ...partition(controller.models, 3)
-                                    .map((iterable) => Expanded(
-                                          child: Row(
-                                            children: [
-                                              ...iterable.map((model) =>
-                                                  CalcButton(
-                                                      model: model,
-                                                      function:
-                                                          controller.calc))
-                                            ],
-                                          ),
-                                        ))
-                              ],
-                            ),
-                          )))
+                      Expanded(flex: 2, child: getDisplay(context)),
+                      Expanded(flex: 4, child: getKeyboard(context))
                     ]));
             }));
+  }
+
+  Widget getDisplay(BuildContext context) {
+    return Container(
+      color: Colors.transparent,
+      padding: EdgeInsets.all(10),
+      child: Align(
+          alignment: Alignment.centerRight,
+          child: FittedBox(
+              child: ConstrainedBox(
+            constraints: BoxConstraints(minWidth: 30),
+            child: Obx(() => Text(
+                  controller.output,
+                  style: Theme.of(context).primaryTextTheme.headline1,
+                )),
+          ))),
+    );
+  }
+
+  Widget getKeyboard(BuildContext context) {
+    return Center(
+        child: ConstrainedBox(
+      constraints: BoxConstraints(minHeight: 400, maxWidth: 350),
+      child: Column(
+        children: [
+          ...partition(controller.models, 3).map((iterable) => Expanded(
+                child: Row(
+                  children: [
+                    ...iterable.map((model) =>
+                        CalcButton(model: model, function: controller.calc))
+                  ],
+                ),
+              ))
+        ],
+      ),
+    ));
   }
 }
