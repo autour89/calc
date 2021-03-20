@@ -1,4 +1,5 @@
 import 'package:calc/screens/widgets/calc_button.dart';
+import 'package:calc/shared/global_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -70,7 +71,7 @@ class HomePage extends GetView<HomeBloc> {
           Theme.of(context).platform == TargetPlatform.android
               ? CircularProgressIndicator()
               : CupertinoActivityIndicator(),
-          Text('Loading...'),
+          Text(loadingTitle),
         ],
       ),
     );
