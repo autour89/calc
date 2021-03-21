@@ -28,7 +28,6 @@ class HomeBloc extends GetxController {
     _init();
   }
 
-
   Future<bool> appStart() async {
     // await Future.delayed(Duration(seconds: 2));
     await DbContextService.initContext;
@@ -72,10 +71,26 @@ class HomeBloc extends GetxController {
         _calculations.add(CalcModel(key: model.value));
       }
     } else {
-      var result =
-          _parser.parse(output).evaluate(EvaluationType.REAL, ContextModel());
-      _calculations.clear();
-      _calculations.add(CalcModel(key: result, leftOperand: true));
+      _evaluate(model);
+    }
+  }
+
+  void _evaluate(CalcModel model) {
+    var result = double.tryParse(_parser
+        .parse(output)
+        .evaluate(EvaluationType.REAL, ContextModel())
+        .toString());
+
+    _calculations.clear();
+    if (result != null &&
+        result != double.nan &&
+        result != double.infinity &&
+        result != double.negativeInfinity &&
+        result != double.maxFinite &&
+        result != double.minPositive) {
+      var integer = result.toInt();
+      _calculations.add(CalcModel(
+          key: result - integer != 0.0 ? result : integer, leftOperand: true));
       if (model.command != Command.equal) {
         _calculations.add(CalcModel(key: model.value));
       }
