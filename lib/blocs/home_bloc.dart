@@ -15,10 +15,12 @@ class HomeBloc extends GetxController {
 
   List<CalcModel> get models => _models;
 
-  bool get _cantCalc =>
-      _calculations.where((element) => element.leftOperand == false).isEmpty ||
-      _operatorSet == false ||
-      _calculations.where((element) => element.leftOperand).isEmpty;
+  bool get _canCalc =>
+      _calculations
+          .where((element) => element.leftOperand == false)
+          .isNotEmpty &&
+      _operatorSet &&
+      _calculations.where((element) => element.leftOperand).isNotEmpty;
 
   bool get _operatorSet => _calculations
       .where((element) => element.command != Command.non)
@@ -41,7 +43,16 @@ class HomeBloc extends GetxController {
     } else if (model.command == Command.edit)
       _calculations.removeLast();
     else if (model.isOperator) {
-      _processOperator(model);
+      //calculate data or set operator
+      if (_canCalc)
+        _evaluate(model);
+      else {
+        if (model.command != Command.equal &&
+            !_operatorSet &&
+            _calculations.length > 0) {
+          _calculations.add(CalcModel(key: model.value));
+        }
+      }
     } else {
       if (!_isValid(model)) return;
       _calculations.add(
@@ -60,19 +71,6 @@ class HomeBloc extends GetxController {
         model.value;
 
     return input.length <= maxLength && _expression.hasMatch(input);
-  }
-
-  void _processOperator(CalcModel model) {
-    //calculate data or set operator
-    if (_cantCalc) {
-      if (model.command != Command.equal &&
-          !_operatorSet &&
-          _calculations.length > 0) {
-        _calculations.add(CalcModel(key: model.value));
-      }
-    } else {
-      _evaluate(model);
-    }
   }
 
   void _evaluate(CalcModel model) {
