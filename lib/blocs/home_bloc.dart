@@ -16,30 +16,24 @@ class HomeBloc extends GetxController {
 
   List<CalcModel> get models => _models;
 
-  Iterable<CalcModel> get functions =>
-      _models.where(
-              (element) =>
-          element.isOperator && element.command != Command.equal);
+  Iterable<CalcModel> get functions => _models.where(
+      (element) => element.isOperator && element.command != Command.equal);
 
-  Iterable<List<CalcModel>> get operands =>
-      partition(
-          _models.where((element) =>
+  Iterable<List<CalcModel>> get operands => partition(
+      _models.where((element) =>
           element.command == Command.non || element.command == Command.equal),
-          3);
+      3);
 
   bool get _canCalc =>
       _calculations
           .where((element) => element.leftOperand == false)
           .isNotEmpty &&
-          _operatorSet &&
-          _calculations
-              .where((element) => element.leftOperand)
-              .isNotEmpty;
+      _operatorSet &&
+      _calculations.where((element) => element.leftOperand).isNotEmpty;
 
-  bool get _operatorSet =>
-      _calculations
-          .where((element) => element.command != Command.non)
-          .isNotEmpty;
+  bool get _operatorSet => _calculations
+      .where((element) => element.command != Command.non)
+      .isNotEmpty;
 
   HomeBloc() {
     _init();
@@ -53,18 +47,17 @@ class HomeBloc extends GetxController {
   }
 
   void calculate({CalcModel model}) {
-    if (model.command == Command.reset) {
+    if (model.command == Command.reset)
       _calculations.clear();
-    } else if (model.command == Command.edit)
+    else if (model.command == Command.edit)
       _calculations.removeLast();
     else if (model.isOperator) {
       //calculate data or set operator
       if (_canCalc)
         _evaluate(model);
       else {
-        if (model.command != Command.equal &&
-            !_operatorSet &&
-            _calculations.length > 0) {
+        if (model.command != Command.equal && _calculations.length > 0) {
+          if (_operatorSet) _calculations.removeLast();
           _calculations.add(CalcModel(key: model.value));
         }
       }
@@ -80,9 +73,9 @@ class HomeBloc extends GetxController {
     var maxLength = 15;
     var filter = _operatorSet ? false : true;
     var input = _calculations
-        .where((c) => c.leftOperand == filter)
-        .map((c) => c.value)
-        .join() +
+            .where((c) => c.leftOperand == filter)
+            .map((c) => c.value)
+            .join() +
         model.value;
 
     return input.length <= maxLength && _expression.hasMatch(input);
@@ -112,27 +105,29 @@ class HomeBloc extends GetxController {
 
   void _init() async {
     _dataService = Get.find<DbContextService>();
-    _models..addAll([
-      CalcModel(key: 7),
-      CalcModel(key: 8),
-      CalcModel(key: 9),
-      CalcModel(key: 4),
-      CalcModel(key: 5),
-      CalcModel(key: 6),
-      CalcModel(key: 1),
-      CalcModel(key: 2),
-      CalcModel(key: 3),
-      CalcModel(key: 0),
-      CalcModel(key: '.'),
-    ])..addAll([
-      CalcModel(key: '-'),
-      CalcModel(key: '+'),
-      CalcModel(key: '*'),
-      CalcModel(key: '/'),
-      CalcModel(key: 'X'),
-      CalcModel(key: 'CE'),
-      CalcModel(key: '='),
-    ]);
+    _models
+      ..addAll([
+        CalcModel(key: 7),
+        CalcModel(key: 8),
+        CalcModel(key: 9),
+        CalcModel(key: 4),
+        CalcModel(key: 5),
+        CalcModel(key: 6),
+        CalcModel(key: 1),
+        CalcModel(key: 2),
+        CalcModel(key: 3),
+        CalcModel(key: 0),
+        CalcModel(key: '.'),
+      ])
+      ..addAll([
+        CalcModel(key: '-'),
+        CalcModel(key: '+'),
+        CalcModel(key: '*'),
+        CalcModel(key: '/'),
+        CalcModel(key: 'X'),
+        CalcModel(key: 'C'),
+        CalcModel(key: '='),
+      ]);
   }
 
   @override

@@ -37,7 +37,7 @@ class CalcModel {
       case 'X':
         command = Command.edit;
         break;
-      case 'CE':
+      case 'C':
         command = Command.reset;
         break;
       default:
