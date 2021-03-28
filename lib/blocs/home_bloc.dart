@@ -3,6 +3,7 @@ import 'package:calc/blocs/services/db_context_service.dart';
 import 'package:calc/models/calc_model.dart';
 import 'package:get/get.dart';
 import 'package:math_expressions/math_expressions.dart';
+import 'package:quiver/iterables.dart';
 
 class HomeBloc extends GetxController {
   IDataService _dataService;
@@ -15,16 +16,30 @@ class HomeBloc extends GetxController {
 
   List<CalcModel> get models => _models;
 
+  Iterable<CalcModel> get functions =>
+      _models.where(
+              (element) =>
+          element.isOperator && element.command != Command.equal);
+
+  Iterable<List<CalcModel>> get operands =>
+      partition(
+          _models.where((element) =>
+          element.command == Command.non || element.command == Command.equal),
+          3);
+
   bool get _canCalc =>
       _calculations
           .where((element) => element.leftOperand == false)
           .isNotEmpty &&
-      _operatorSet &&
-      _calculations.where((element) => element.leftOperand).isNotEmpty;
+          _operatorSet &&
+          _calculations
+              .where((element) => element.leftOperand)
+              .isNotEmpty;
 
-  bool get _operatorSet => _calculations
-      .where((element) => element.command != Command.non)
-      .isNotEmpty;
+  bool get _operatorSet =>
+      _calculations
+          .where((element) => element.command != Command.non)
+          .isNotEmpty;
 
   HomeBloc() {
     _init();
@@ -37,7 +52,7 @@ class HomeBloc extends GetxController {
     return true;
   }
 
-  void calc({CalcModel model}) {
+  void calculate({CalcModel model}) {
     if (model.command == Command.reset) {
       _calculations.clear();
     } else if (model.command == Command.edit)
@@ -65,9 +80,9 @@ class HomeBloc extends GetxController {
     var maxLength = 15;
     var filter = _operatorSet ? false : true;
     var input = _calculations
-            .where((c) => c.leftOperand == filter)
-            .map((c) => c.value)
-            .join() +
+        .where((c) => c.leftOperand == filter)
+        .map((c) => c.value)
+        .join() +
         model.value;
 
     return input.length <= maxLength && _expression.hasMatch(input);
@@ -97,29 +112,27 @@ class HomeBloc extends GetxController {
 
   void _init() async {
     _dataService = Get.find<DbContextService>();
-    _models
-      ..addAll([
-        CalcModel(key: 1),
-        CalcModel(key: 2),
-        CalcModel(key: 3),
-        CalcModel(key: 4),
-        CalcModel(key: 5),
-        CalcModel(key: 6),
-        CalcModel(key: 7),
-        CalcModel(key: 8),
-        CalcModel(key: 9),
-        CalcModel(key: 0),
-        CalcModel(key: '.'),
-      ])
-      ..addAll([
-        CalcModel(key: '-'),
-        CalcModel(key: '+'),
-        CalcModel(key: '*'),
-        CalcModel(key: '/'),
-        CalcModel(key: 'CE'),
-        CalcModel(key: 'X'),
-        CalcModel(key: '='),
-      ]);
+    _models..addAll([
+      CalcModel(key: 7),
+      CalcModel(key: 8),
+      CalcModel(key: 9),
+      CalcModel(key: 4),
+      CalcModel(key: 5),
+      CalcModel(key: 6),
+      CalcModel(key: 1),
+      CalcModel(key: 2),
+      CalcModel(key: 3),
+      CalcModel(key: 0),
+      CalcModel(key: '.'),
+    ])..addAll([
+      CalcModel(key: '-'),
+      CalcModel(key: '+'),
+      CalcModel(key: '*'),
+      CalcModel(key: '/'),
+      CalcModel(key: 'X'),
+      CalcModel(key: 'CE'),
+      CalcModel(key: '='),
+    ]);
   }
 
   @override

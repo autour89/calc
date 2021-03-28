@@ -25,14 +25,15 @@ class MyApp extends StatelessWidget {
           primaryColor: Colors.grey[300],
           accentColor: Colors.grey[700],
           primaryTextTheme: TextTheme(
-              headline1: GoogleFonts.aldrich(fontSize: 35, color: Colors.black),
+              headline1: GoogleFonts.poppins(fontSize: 60
+                  , color: Colors.black),
               headline5: TextStyle(fontSize: 24, color: Colors.grey[300]))),
       darkTheme: ThemeData(
           brightness: Brightness.dark,
           primaryColor: Colors.grey[800],
           accentColor: Colors.grey[400],
           primaryTextTheme: TextTheme(
-              headline1: GoogleFonts.aldrich(fontSize: 35, color: Colors.white),
+              headline1: GoogleFonts.poppins(fontSize: 60, color: Colors.white),
               headline5: TextStyle(fontSize: 24, color: Colors.black))),
     );
   }

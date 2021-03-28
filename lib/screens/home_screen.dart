@@ -3,7 +3,6 @@ import 'package:calc/screens/widgets/loading_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:quiver/iterables.dart';
 import '../blocs/home_bloc.dart';
 import '../screens/styles/extensions.dart';
 
@@ -19,7 +18,7 @@ class HomePage extends GetView<HomeBloc> {
                   ? LoadingView(withTitle: true)
                   : SafeArea(
                       child: Column(children: [
-                      Expanded(flex: 2, child: getDisplay(context)),
+                      Expanded(flex: 3, child: getDisplay(context)),
                       Expanded(flex: 4, child: getKeyboard(context))
                     ]));
             }));
@@ -46,16 +45,29 @@ class HomePage extends GetView<HomeBloc> {
     return Center(
         child: ConstrainedBox(
       constraints: BoxConstraints(minHeight: 400, maxWidth: 350),
-      child: Column(
+      child: Row(
         children: [
-          ...partition(controller.models, 3).map((iterable) => Expanded(
-                child: Row(
-                  children: [
-                    ...iterable.map((model) =>
-                        CalcButton(model: model, function: controller.calc))
-                  ],
-                ),
-              ))
+          Expanded(
+              flex: 3,
+              child: Column(
+                children: [
+                  ...controller.operands.map((iterable) => Expanded(
+                        child: Row(
+                          children: [
+                            ...iterable.map((model) => CalcButton(
+                                model: model, function: controller.calculate))
+                          ],
+                        ),
+                      ))
+                ],
+              )),
+          Expanded(
+              child: Column(
+            children: [
+              ...controller.functions.map((model) =>
+                  CalcButton(model: model, function: controller.calculate))
+            ],
+          ))
         ],
       ),
     ));

@@ -16,7 +16,7 @@ class CalcButton extends StatelessWidget {
             style: ElevatedButton.styleFrom(
                 primary: Theme.of(context).accentColor,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30))),
+                    borderRadius: BorderRadius.circular(25))),
             onPressed: () => function(model: model),
             child: Center(
                 child: FittedBox(
