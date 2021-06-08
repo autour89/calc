@@ -1,12 +1,13 @@
 import 'package:calc/blocs/services/I_data_service.dart';
 import 'package:calc/blocs/services/db_context_service.dart';
 import 'package:calc/models/calc_model.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:math_expressions/math_expressions.dart';
 import 'package:quiver/iterables.dart';
 
 class HomeBloc extends GetxController {
-  IDataService _dataService;
+  late IDataService _dataService;
   RxList<CalcModel> _calculations = RxList.empty();
   List<CalcModel> _models = [];
   RegExp _expression = RegExp(r'^(\d?|[0][.]\d*|[1-9][0-9]*[.]?\d*)$');
@@ -29,7 +30,7 @@ class HomeBloc extends GetxController {
           .where((element) => element.leftOperand == false)
           .isNotEmpty &&
       _operatorSet &&
-      _calculations.where((element) => element.leftOperand).isNotEmpty;
+      _calculations.where((element) => element.leftOperand == true).isNotEmpty;
 
   bool get _operatorSet => _calculations
       .where((element) => element.command != Command.non)
@@ -46,7 +47,7 @@ class HomeBloc extends GetxController {
     return true;
   }
 
-  void calculate({CalcModel model}) {
+  void calculate({required CalcModel model}) {
     if (model.command == Command.reset)
       _calculations.clear();
     else if (model.command == Command.edit)

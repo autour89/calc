@@ -4,8 +4,8 @@ enum Command { non, equal, edit, reset, minus, add, multiple, divide }
 
 class CalcModel {
   dynamic key;
-  Command command;
-  bool leftOperand;
+  Command? command;
+  bool? leftOperand;
 
   CalcModel({@required this.key, this.leftOperand}) {
     _mapToCommand();
