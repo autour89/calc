@@ -6,12 +6,13 @@ class CalcButton extends StatelessWidget {
   final CalcModel model;
   final Function function;
 
-  CalcButton({required this.model, required this.function});
+  const CalcButton({required this.model, required this.function, Key? key})
+      : super(key: key);
 
   Widget _build(BuildContext context) {
     return Expanded(
       child: Container(
-        margin: EdgeInsets.all(6),
+        margin: const EdgeInsets.all(6),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
               primary: Theme.of(context).secondaryHeaderColor,

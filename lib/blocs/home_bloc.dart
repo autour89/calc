@@ -1,17 +1,16 @@
 import 'package:calc/blocs/services/I_data_service.dart';
 import 'package:calc/blocs/services/db_context_service.dart';
 import 'package:calc/models/calc_model.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:math_expressions/math_expressions.dart';
 import 'package:quiver/iterables.dart';
 
 class HomeBloc extends GetxController {
   late IDataService _dataService;
-  RxList<CalcModel> _calculations = RxList.empty();
-  List<CalcModel> _models = [];
-  RegExp _expression = RegExp(r'^(\d?|[0][.]\d*|[1-9][0-9]*[.]?\d*)$');
-  Parser _parser = Parser();
+  final RxList<CalcModel> _calculations = RxList.empty();
+  final List<CalcModel> _models = [];
+  final RegExp _expression = RegExp(r'^(\d?|[0][.]\d*|[1-9][0-9]*[.]?\d*)$');
+  final Parser _parser = Parser();
 
   String get output => _calculations.map((e) => e.value).join();
 
@@ -48,16 +47,16 @@ class HomeBloc extends GetxController {
   }
 
   void calculate({required CalcModel model}) {
-    if (model.command == Command.reset)
+    if (model.command == Command.reset) {
       _calculations.clear();
-    else if (model.command == Command.edit)
+    } else if (model.command == Command.edit) {
       _calculations.removeLast();
-    else if (model.isOperator) {
+    } else if (model.isOperator) {
       //calculate data or set operator
-      if (_canCalc)
+      if (_canCalc) {
         _evaluate(model);
-      else {
-        if (model.command != Command.equal && _calculations.length > 0) {
+      } else {
+        if (model.command != Command.equal && _calculations.isNotEmpty) {
           if (_operatorSet) _calculations.removeLast();
           _calculations.add(CalcModel(key: model.value));
         }
@@ -129,10 +128,5 @@ class HomeBloc extends GetxController {
         CalcModel(key: 'C'),
         CalcModel(key: '='),
       ]);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }

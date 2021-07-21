@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class LoadingView extends StatelessWidget {
   final bool withTitle;
 
-  LoadingView({this.withTitle = false});
+  const LoadingView({this.withTitle = false, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +14,8 @@ class LoadingView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Theme.of(context).platform == TargetPlatform.android
-              ? CircularProgressIndicator()
-              : CupertinoActivityIndicator(),
+              ? const CircularProgressIndicator()
+              : const CupertinoActivityIndicator(),
           if (withTitle) Text(loadingTitle),
         ],
       ),

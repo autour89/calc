@@ -7,6 +7,8 @@ import '../blocs/home_bloc.dart';
 import '../screens/styles/extensions.dart';
 
 class HomePage extends GetView<HomeBloc> {
+  const HomePage(Key? key) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,12 +29,12 @@ class HomePage extends GetView<HomeBloc> {
   Widget getDisplay(BuildContext context) {
     return Container(
       color: Colors.transparent,
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: Align(
           alignment: Alignment.centerRight,
           child: FittedBox(
               child: ConstrainedBox(
-            constraints: BoxConstraints(minWidth: 30),
+            constraints: const BoxConstraints(minWidth: 30),
             child: Obx(() => Text(
                   controller.output,
                   style: Theme.of(context).primaryTextTheme.headline1,
@@ -44,7 +46,7 @@ class HomePage extends GetView<HomeBloc> {
   Widget getKeyboard(BuildContext context) {
     return Center(
         child: ConstrainedBox(
-      constraints: BoxConstraints(minHeight: 400, maxWidth: 350),
+      constraints: const BoxConstraints(minHeight: 400, maxWidth: 350),
       child: Row(
         children: [
           Expanded(
