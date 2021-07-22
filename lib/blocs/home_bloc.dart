@@ -16,9 +16,11 @@ class HomeBloc extends GetxController {
 
   List<CalcModel> get models => _models;
 
+  /// Get only operators or let say commands
   Iterable<CalcModel> get functions => _models.where(
       (element) => element.isOperator && element.command != Command.equal);
 
+  /// Get only numbers and equal command(why equal sign is here?)
   Iterable<List<CalcModel>> get operands => partition(
       _models.where((element) =>
           element.command == Command.non || element.command == Command.equal),
@@ -39,13 +41,15 @@ class HomeBloc extends GetxController {
     _init();
   }
 
+  /// init dependencies
   Future<bool> appStart() async {
-    // await Future.delayed(Duration(seconds: 2));
+    // await Future.delayed(Duration(seconds: 2)); //for testing loading view
     await DbContextService.initContext;
 
     return true;
   }
 
+  /// calculate input
   void calculate({required CalcModel model}) {
     if (model.command == Command.reset) {
       _calculations.clear();

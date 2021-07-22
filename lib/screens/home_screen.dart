@@ -7,7 +7,7 @@ import '../blocs/home_bloc.dart';
 import '../screens/styles/extensions.dart';
 
 class HomePage extends GetView<HomeBloc> {
-  const HomePage(Key? key) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class HomePage extends GetView<HomeBloc> {
             future: controller.appStart(),
             builder: (context, snapshot) {
               return !snapshot.hasData
-                  ? LoadingView(withTitle: true)
+                  ? const LoadingView(withTitle: true)
                   : SafeArea(
                       child: Column(children: [
                       Expanded(flex: 3, child: getDisplay(context)),

@@ -6,16 +6,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       getPages: [
         GetPage(
           name: '/',
-          page: () => HomePage(),
+          page: () => const HomePage(),
           binding: HomeBinding(),
         )
       ],
@@ -33,7 +35,7 @@ class MyApp extends StatelessWidget {
           secondaryHeaderColor: Colors.grey[400],
           primaryTextTheme: TextTheme(
               headline1: GoogleFonts.poppins(fontSize: 60, color: Colors.white),
-              headline5: TextStyle(fontSize: 24, color: Colors.black))),
+              headline5: const TextStyle(fontSize: 24, color: Colors.black))),
     );
   }
 }
