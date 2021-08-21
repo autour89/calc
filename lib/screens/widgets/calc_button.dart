@@ -1,6 +1,8 @@
 import 'package:calc/models/calc_model.dart';
+import 'package:calc/shared/global_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class CalcButton extends StatelessWidget {
   final CalcModel model;
@@ -19,14 +21,21 @@ class CalcButton extends StatelessWidget {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(25))),
           onPressed: () => function(model: model),
-          child: Center(
-              child: FittedBox(
-            child: Text(model.value,
-                style: Theme.of(context).primaryTextTheme.headline5),
-          )),
+          child: Center(child: imageOrDefault(context)),
         ),
       ),
     );
+  }
+
+  Widget imageOrDefault(BuildContext context) {
+    var image = SvgPicture.asset(backspaceImage);
+
+    return model.isImage
+        ? image
+        : FittedBox(
+            child: Text(model.value,
+                style: Theme.of(context).primaryTextTheme.headline5),
+          );
   }
 
   @override

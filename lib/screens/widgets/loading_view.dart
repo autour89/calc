@@ -16,7 +16,7 @@ class LoadingView extends StatelessWidget {
           Theme.of(context).platform == TargetPlatform.android
               ? const CircularProgressIndicator()
               : const CupertinoActivityIndicator(),
-          if (withTitle) Text(loadingTitle),
+          if (withTitle) const Text(loadingTitle),
         ],
       ),
     );
