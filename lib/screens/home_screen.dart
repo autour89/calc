@@ -1,9 +1,7 @@
 import 'package:calc/screens/widgets/calc_button.dart';
 import 'package:calc/screens/widgets/loading_view.dart';
-import 'package:calc/shared/global_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import '../blocs/home_bloc.dart';
@@ -29,8 +27,6 @@ class HomePage extends GetView<HomeBloc> {
   }
 
   Widget getDisplay(BuildContext context) {
-    var r = SvgPicture.asset(backspaceImage);
-
     return Container(
       color: Colors.transparent,
       padding: const EdgeInsets.all(10),
