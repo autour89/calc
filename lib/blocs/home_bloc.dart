@@ -128,7 +128,7 @@ class HomeBloc extends GetxController {
         CalcModel(key: '+'),
         CalcModel(key: '*'),
         CalcModel(key: '/'),
-        CalcModel(key: 'X', isImage: true),
+        CalcModel(key: 'X'),
         CalcModel(key: 'C'),
         CalcModel(key: '='),
       ]);

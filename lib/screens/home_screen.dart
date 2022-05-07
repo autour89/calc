@@ -1,6 +1,5 @@
 import 'package:calc/screens/widgets/calc_button.dart';
 import 'package:calc/screens/widgets/loading_view.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -6,9 +6,8 @@ class CalcModel {
   dynamic key;
   Command? command;
   bool? leftOperand;
-  bool isImage;
 
-  CalcModel({@required this.key, this.leftOperand, this.isImage = false}) {
+  CalcModel({@required this.key, this.leftOperand}) {
     _mapToCommand();
   }
 

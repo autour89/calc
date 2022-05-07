@@ -1,6 +1,5 @@
 import 'package:calc/models/calc_model.dart';
 import 'package:calc/shared/global_config.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -28,14 +27,10 @@ class CalcButton extends StatelessWidget {
   }
 
   Widget imageOrDefault(BuildContext context) {
-    var image = SvgPicture.asset(backspaceImage);
-
-    return model.isImage
-        ? image
-        : FittedBox(
-            child: Text(model.value,
-                style: Theme.of(context).primaryTextTheme.headline5),
-          );
+    return FittedBox(
+      child: Text(model.value,
+          style: Theme.of(context).primaryTextTheme.headline5),
+    );
   }
 
   @override
