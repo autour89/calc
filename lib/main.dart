@@ -1,6 +1,5 @@
 import 'package:calc/blocs/bindings/home_binding.dart';
 import 'package:calc/blocs/bindings/service_binding.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:calc/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
