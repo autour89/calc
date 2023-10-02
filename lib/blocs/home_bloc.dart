@@ -1,52 +1,36 @@
-import 'package:calc/blocs/services/I_data_service.dart';
-import 'package:calc/blocs/services/db_context_service.dart';
 import 'package:calc/models/calc_model.dart';
 import 'package:get/get.dart';
 import 'package:math_expressions/math_expressions.dart';
 import 'package:quiver/iterables.dart';
 
 class HomeBloc extends GetxController {
-  late IDataService _dataService;
-  final RxList<CalcModel> _calculations = RxList.empty();
+  final RxList<CalcModel> _calculations = RxList<CalcModel>.empty();
   final List<CalcModel> _models = [];
-  final RegExp _expression = RegExp(r'^(\d?|[0][.]\d*|[1-9][0-9]*[.]?\d*)$');
+  final RegExp _expression = RegExp(r'^(\d?|0[.]\d*|[1-9][0-9]*[.]?\d*)$');
   final Parser _parser = Parser();
 
   String get output => _calculations.map((e) => e.value).join();
 
   List<CalcModel> get models => _models;
 
-  /// Get only operators or let say commands
+  /// Get only operators / commands
   Iterable<CalcModel> get functions => _models.where(
       (element) => element.isOperator && element.command != Command.equal);
 
   /// Get only numbers and equal command(why equal sign is here?)
   Iterable<List<CalcModel>> get operands => partition(
       _models.where((element) =>
-          element.command == Command.non || element.command == Command.equal),
-      3);
+          element.command == Command.non || element.command == Command.equal), 3);
 
   bool get _canCalc =>
-      _calculations
-          .where((element) => element.leftOperand == false)
-          .isNotEmpty &&
-      _operatorSet &&
-      _calculations.where((element) => element.leftOperand == true).isNotEmpty;
+      _calculations.any((element) => element.leftOperand == false) &&
+          _operatorSet;
 
-  bool get _operatorSet => _calculations
-      .where((element) => element.command != Command.non)
-      .isNotEmpty;
+  bool get _operatorSet =>
+      _calculations.any((element) => element.command != Command.non);
 
   HomeBloc() {
     _init();
-  }
-
-  /// init dependencies
-  Future<bool> appStart() async {
-    // await Future.delayed(Duration(seconds: 2)); //for testing loading view
-    await DbContextService.initContext;
-
-    return true;
   }
 
   /// calculate input
@@ -56,7 +40,6 @@ class HomeBloc extends GetxController {
     } else if (model.command == Command.edit) {
       _calculations.removeLast();
     } else if (model.isOperator) {
-      //calculate data or set operator
       if (_canCalc) {
         _evaluate(model);
       } else {
@@ -68,18 +51,16 @@ class HomeBloc extends GetxController {
     } else {
       if (!_isValid(model)) return;
       _calculations.add(
-          CalcModel(key: model.key, leftOperand: _operatorSet ? false : true));
+          CalcModel(key: model.key, leftOperand: !_operatorSet));
     }
   }
 
   bool _isValid(CalcModel model) {
-    //validate input form
     var maxLength = 15;
-    var filter = _operatorSet ? false : true;
     var input = _calculations
-            .where((c) => c.leftOperand == filter)
-            .map((c) => c.value)
-            .join() +
+        .where((c) => c.leftOperand == !_operatorSet)
+        .map((c) => c.value)
+        .join() +
         model.value;
 
     return input.length <= maxLength && _expression.hasMatch(input);
@@ -93,7 +74,6 @@ class HomeBloc extends GetxController {
 
     _calculations.clear();
     if (result != null &&
-        result != double.nan &&
         result != double.infinity &&
         result != double.negativeInfinity &&
         result != double.maxFinite &&
@@ -108,22 +88,12 @@ class HomeBloc extends GetxController {
   }
 
   void _init() async {
-    _dataService = Get.find<DbContextService>();
     _models
       ..addAll([
-        CalcModel(key: 7),
-        CalcModel(key: 8),
-        CalcModel(key: 9),
-        CalcModel(key: 4),
-        CalcModel(key: 5),
-        CalcModel(key: 6),
-        CalcModel(key: 1),
-        CalcModel(key: 2),
-        CalcModel(key: 3),
-        CalcModel(key: 0),
-        CalcModel(key: '.'),
+        for (var i = 7; i >= 0; i--) CalcModel(key: i),
       ])
       ..addAll([
+        CalcModel(key: '.'),
         CalcModel(key: '-'),
         CalcModel(key: '+'),
         CalcModel(key: '*'),

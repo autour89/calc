@@ -1,5 +1,4 @@
 import 'package:calc/screens/widgets/calc_button.dart';
-import 'package:calc/screens/widgets/loading_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,17 +11,11 @@ class HomePage extends GetView<HomeBloc> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
-        body: FutureBuilder(
-            future: controller.appStart(),
-            builder: (context, snapshot) {
-              return !snapshot.hasData
-                  ? const LoadingView(withTitle: true)
-                  : SafeArea(
-                      child: Column(children: [
-                      Expanded(flex: 3, child: getDisplay(context)),
-                      Expanded(flex: 4, child: getKeyboard(context))
-                    ]));
-            }));
+        body: SafeArea(
+            child: Column(children: [
+              Expanded(flex: 3, child: getDisplay(context)),
+              Expanded(flex: 4, child: getKeyboard(context))
+            ])),);
   }
 
   Widget getDisplay(BuildContext context) {

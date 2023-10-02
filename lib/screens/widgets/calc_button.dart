@@ -1,7 +1,5 @@
 import 'package:calc/models/calc_model.dart';
-import 'package:calc/shared/global_config.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class CalcButton extends StatelessWidget {
   final CalcModel model;

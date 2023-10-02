@@ -1,5 +1,4 @@
-import 'package:calc/blocs/bindings/home_binding.dart';
-import 'package:calc/blocs/bindings/service_binding.dart';
+import 'package:calc/blocs/home_bloc.dart';
 import 'package:calc/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,7 +19,6 @@ class MyApp extends StatelessWidget {
           binding: HomeBinding(),
         )
       ],
-      initialBinding: ServiceBinding(),
       theme: ThemeData(
           brightness: Brightness.light,
           primaryColor: Colors.grey[300],
@@ -36,5 +34,12 @@ class MyApp extends StatelessWidget {
               headline1: GoogleFonts.poppins(fontSize: 60, color: Colors.white),
               headline5: const TextStyle(fontSize: 24, color: Colors.black))),
     );
+  }
+}
+
+class HomeBinding implements Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut<HomeBloc>(() => HomeBloc());
   }
 }
